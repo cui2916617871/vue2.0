@@ -7,7 +7,7 @@
         <template v-for="product in productList">
           <h3>{{ product.title}}</h3>
           <ul>
-            <li v-for="item in product.list" v-bind:key="item">
+            <li v-for="(item,index) in product.list" v-bind:key="index">
               <a :href="item.url">{{ item.name }}</a>
               <span v-if="item.hot" class="hot-tag">HOT</span>
             </li>
@@ -18,16 +18,16 @@
       <div class="index-left-block lastest-news">
         <h2>最新消息</h2>
         <ul>
-          <li v-for="item in newsList" >
+          <li v-for="(item,index) in newsList" v-bind:key="index">
             <a :href="item.url" class="new-item">{{ item.title }}</a>
           </li>
         </ul>
       </div>
     </div>
     <div class="index-right">
-      <slide-show :slides="slides" :inv="invTime"></slide-show>
+      <slide-show :slides="slides" :inv="invTime" @onchange="onchangeevent"></slide-show>
       <div class="index-board-list">
-        <div class="index-board-item" v-for="(item, index) in boardList" v-bind:key="item" :class="[{'line-last':index %2 !=0},'index-board-'+item.id]">
+        <div class="index-board-item" v-for="(item, index) in boardList" v-bind:key="index" :class="[{'line-last':index %2 !=0},'index-board-'+item.id]">
           <div class="index-board-item-inner" >
             <h2>{{ item.title }}</h2>
             <p>{{ item.description }}</p>
@@ -39,21 +39,26 @@
 </template>
 <script>
 
+//1,引入；2，声明，3：使用
+import slideShow from '../components/slideShow'
 export default {
+  components:{
+    slideShow
+  },
   created:function(){
-    this.$http.get('getList')
-    .then(function(res){
-      console.log(res)
-    },function(err){
-      console.log(err)
-    })
+
+  },
+  methods:{
+    onchangeevent(){
+      //console.log(456)
+    }
   },
   data () {
     return {
-      invTime: 2000,
+      invTime: 5000,
       slides: [
         {
-          src: require('../assets/slideShow/pic1.jpg'),
+          src: require('../assets/slideShow/pic1.jpg'), //js引入资源需要用require，通过css引入不需要通过
           title: 'xxx1',
           href: 'detail/analysis'
         },
@@ -65,7 +70,7 @@ export default {
         {
           src: require('../assets/slideShow/pic3.jpg'),
           title: 'xxx3',
-          href: 'http://xxx.xxx.com'
+          href: 'detail/publish'
         },
         {
           src: require('../assets/slideShow/pic4.jpg'),
